@@ -40,3 +40,8 @@ require_once DEVELOPER_PORTFOLIO_CPT_PLUGIN_DIR . 'includes/experience-cpt.php';
  * Include the 'Portfolio' Custom Post Type file.
  */
 require_once DEVELOPER_PORTFOLIO_CPT_PLUGIN_DIR . 'includes/portfolio-cpt.php';
+
+/**
+ * Include the 'About' Options file.
+ */
+require_once DEVELOPER_PORTFOLIO_CPT_PLUGIN_DIR . 'includes/about-options.php';

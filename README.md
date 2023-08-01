@@ -143,6 +143,15 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
 - Skills are shown in the REST API for external consumption.
 - The Skills list in the dashboard displays a "Featured" column to identify featured skills.
 
+### Bio
+
+- Bio can be managed under **Developer Bio** in the WordPress dashboard.
+- This page can have the following fields:
+
+  - **Description:** *(Editor)* About us page content.
+  
+- Bio are shown in the REST API for external consumption.
+
 ## License
 
 This plugin is licensed under the GNU General Public License - see the [LICENSE](LICENSE) file for details.
