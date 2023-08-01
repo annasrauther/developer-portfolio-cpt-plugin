@@ -123,7 +123,7 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
 - Each Portfolio entry can have the following fields:
 
   - **Title:** *(Text)* The title of the portfolio.
-  - **Client:** *(Text)* The name of the client associated with the portfolio.
+  - **Client:** *(Select)* The name of the client associated with the portfolio.
   - **URL:** *(URL)* The URL of the portfolio project.
   - **Description:** *(Textarea/WYSIWYG)* A detailed description of the portfolio project.
   - **Skills:** *(Select)* The skills utilized in the portfolio project. *(Multiple selections allowed)*

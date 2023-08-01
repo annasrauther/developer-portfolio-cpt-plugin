@@ -26,6 +26,16 @@ function developer_portfolio_register_portfolio_cpt() {
         'supports' => array('title', 'thumbnail'),
         'show_in_rest' => true,
     ));
+
+    // Register the 'Client' custom taxonomy.
+    register_taxonomy('client', 'portfolio', array(
+        'label' => 'Client',
+        'hierarchical' => false,
+        'public' => true,
+        'show_ui' => true,
+        'show_admin_column' => true,
+        'rewrite' => array('slug' => 'client'),
+    ));
 }
 add_action('init', 'developer_portfolio_register_portfolio_cpt');
 
@@ -46,7 +56,9 @@ function developer_portfolio_add_portfolio_metabox($meta_boxes) {
             array(
                 'name' => 'Client',
                 'id' => 'client',
-                'type' => 'text',
+                'type' => 'taxonomy',
+                'taxonomy' => 'client', // Link the field to the 'Client' taxonomy.
+                'field_type' => 'select_advanced', // Use select_advanced for single select.
             ),
             array(
                 'name' => 'URL',
@@ -86,7 +98,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_portfolio_metabox');
  */
 function developer_portfolio_modify_portfolio_rest_api_response($response, $post, $request) {
     $response->data['payload'] = array(
-        'client' => get_post_meta($post->ID, 'client', true),
+        'client' => wp_get_post_terms($post->ID, 'client', array('fields' => 'names')), // Get the client name.
         'featured_image' => get_the_post_thumbnail_url($post->ID, 'full'),
         'url' => get_post_meta($post->ID, 'url', true),
         'description' => get_post_meta($post->ID, 'description', true),
