@@ -22,17 +22,34 @@ function developer_portfolio_register_skills_cpt() {
         'menu_icon' => 'dashicons-html',
         'public' => true,
         'has_archive' => true,
-        'supports' => array('title', 'thumbnail'), // Added support for featured images
+        'supports' => array('title'),
         'show_in_rest' => true, // To enable REST API support
     ));
 }
 add_action('init', 'developer_portfolio_register_skills_cpt');
 
 /**
+ * Register the 'Type' Taxonomy for 'Skills' Custom Post Type.
+ *
+ * Registers the 'Type' taxonomy for the 'Skills' custom post type.
+ */
+function developer_portfolio_register_type_taxonomy() {
+    register_taxonomy('skill_type', 'skill', array(
+        'label' => 'Skill Type',
+        'hierarchical' => false,
+        'public' => true,
+        'show_ui' => true,
+        'show_admin_column' => false,
+        'rewrite' => array('slug' => 'skill-type'),
+    ));
+}
+add_action('init', 'developer_portfolio_register_type_taxonomy');
+
+/**
  * Add custom meta box for 'Skills' custom post type.
  *
  * Adds a custom meta box to the 'Skills' custom post type.
- * The meta box allows users to add additional details such as type and description for each skill entry.
+ * The meta box allows users to add additional details such as description and featured for each skill entry.
  */
 function developer_portfolio_add_skills_metabox($meta_boxes) {
     $meta_boxes[] = array(
@@ -43,9 +60,9 @@ function developer_portfolio_add_skills_metabox($meta_boxes) {
         'priority' => 'high',
         'fields' => array(
             array(
-                'name' => 'Type',
-                'id' => 'type',
-                'type' => 'text',
+                'name' => 'Skill Image',
+                'id' => 'skill_image',
+                'type' => 'image_advanced',
             ),
             array(
                 'name' => 'Description',
@@ -68,7 +85,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_skills_metabox');
  * Modify the REST API response to show custom fields inside the 'payload' object.
  *
  * Modifies the REST API response to include custom fields inside the 'payload' object for the 'Skills' custom post type.
- * This ensures that the custom fields (type, description, and featured) are available when fetching skill data from the REST API.
+ * This ensures that the custom fields (description, featured, and skill_type) are available when fetching skill data from the REST API.
  *
  * @param WP_REST_Response $response The REST API response object.
  * @param WP_Post          $post     The 'Skills' post object.
@@ -77,10 +94,14 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_skills_metabox');
  */
 function developer_portfolio_modify_skills_rest_api_response($response, $post, $request) {
     $custom_fields = array(
-        'type' => get_post_meta($post->ID, 'type', true),
+        'skill_image' => wp_get_attachment_url(get_post_meta($post->ID, 'skill_image', true)),
         'description' => get_post_meta($post->ID, 'description', true),
-        'featured' => (bool) get_post_meta($post->ID, 'featured', true),
     );
+
+    $terms = wp_get_post_terms($post->ID, 'skill_type');
+    if (!is_wp_error($terms) && !empty($terms)) {
+        $custom_fields['skill_type'] = $terms[0]->name;
+    }
 
     $response->data['payload'] = $custom_fields;
     return $response;
@@ -95,12 +116,13 @@ add_filter('rest_prepare_skill', 'developer_portfolio_modify_skills_rest_api_res
  */
 function developer_portfolio_add_skills_list_column($columns) {
     $columns['featured'] = 'Featured';
+    $columns['skill_type'] = 'Type'; // Add the 'Type' taxonomy column.
     return $columns;
 }
 add_filter('manage_skill_posts_columns', 'developer_portfolio_add_skills_list_column');
 
 /**
- * Display the "featured" tag as a star icon on the skills list page.
+ * Display the "featured" tag as a star icon and the 'Type' taxonomy term on the skills list page.
  *
  * @param string $column Column name.
  * @param int $post_id Post ID.
@@ -109,6 +131,11 @@ function developer_portfolio_display_skills_list_column($column, $post_id) {
     if ($column === 'featured') {
         $featured = get_post_meta($post_id, 'featured', true);
         echo $featured ? '<span style="color: #2372b1;" class="dashicons dashicons-star-filled"></span>' : '<span class="dashicons dashicons-star-empty"></span>';
+    } elseif ($column === 'skill_type') {
+        $terms = wp_get_post_terms($post_id, 'skill_type');
+        if (!empty($terms)) {
+            echo esc_html($terms[0]->name);
+        }
     }
 }
 add_action('manage_skill_posts_custom_column', 'developer_portfolio_display_skills_list_column', 10, 2);
@@ -116,8 +143,7 @@ add_action('manage_skill_posts_custom_column', 'developer_portfolio_display_skil
 /**
  * Move the featured image meta box below the title in the post editor.
  */
-function developer_portfolio_move_featured_image_meta_box() {
+function developer_portfolio_remove_featured_image_meta_box() {
     remove_meta_box('postimagediv', 'skill', 'side');
-    add_meta_box('postimagediv', __('Skill Image'), 'post_thumbnail_meta_box', 'skill', 'normal', 'high');
 }
-add_action('edit_form_after_title', 'developer_portfolio_move_featured_image_meta_box');
+add_action('edit_form_after_title', 'developer_portfolio_remove_featured_image_meta_box');

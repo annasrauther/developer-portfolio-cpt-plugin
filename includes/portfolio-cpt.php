@@ -23,7 +23,7 @@ function developer_portfolio_register_portfolio_cpt() {
         'menu_icon' => 'dashicons-format-gallery', 
         'public' => true,
         'has_archive' => true,
-        'supports' => array('title', 'thumbnail'),
+        'supports' => array('title'),
         'show_in_rest' => true,
     ));
 
@@ -54,11 +54,9 @@ function developer_portfolio_add_portfolio_metabox($meta_boxes) {
         'priority' => 'high',
         'fields' => array(
             array(
-                'name' => 'Client',
-                'id' => 'client',
-                'type' => 'taxonomy',
-                'taxonomy' => 'client', // Link the field to the 'Client' taxonomy.
-                'field_type' => 'select_advanced', // Use select_advanced for single select.
+                'name' => 'Screenshot',
+                'id' => 'screenshot',
+                'type' => 'image_advanced',
             ),
             array(
                 'name' => 'URL',
@@ -74,10 +72,9 @@ function developer_portfolio_add_portfolio_metabox($meta_boxes) {
                 'name' => 'Skills',
                 'id' => 'skills',
                 'type' => 'post',
-                'post_type' => 'skills',
+                'post_type' => 'skill',
                 'field_type' => 'select_advanced',
                 'multiple' => true,
-                'clone' => true,
             ),
         ),
     );
@@ -89,7 +86,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_portfolio_metabox');
  * Modify the REST API response to show custom fields inside the 'payload' object.
  *
  * Modifies the REST API response for the 'portfolio' custom post type to include custom fields inside the 'payload' object.
- * It adds additional data such as client, featured image URL, URL, description, and skills.
+ * It adds additional data such as client, screenshot image, URL, description, and skills.
  *
  * @param WP_REST_Response $response The REST API response.
  * @param WP_Post $post The post object.
@@ -97,13 +94,40 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_portfolio_metabox');
  * @return WP_REST_Response Modified REST API response.
  */
 function developer_portfolio_modify_portfolio_rest_api_response($response, $post, $request) {
-    $response->data['payload'] = array(
-        'client' => wp_get_post_terms($post->ID, 'client', array('fields' => 'names')), // Get the client name.
-        'featured_image' => get_the_post_thumbnail_url($post->ID, 'full'),
+    $custom_fields = array(
+        'client' => '',
         'url' => get_post_meta($post->ID, 'url', true),
         'description' => get_post_meta($post->ID, 'description', true),
-        'skills' => get_post_meta($post->ID, 'skills', true),
+        'skills' => array(),
+        'screenshot_url' => wp_get_attachment_url(get_post_meta($post->ID, 'screenshot', true)),
     );
+
+    // Get the 'client' term associated with the 'portfolio' post.
+    $term = get_the_terms($post->ID, 'client');
+    if (!empty($term) && is_array($term)) {
+        $custom_fields['client'] = $term[0]->name;
+    }
+
+    // Get the selected skill ID associated with the 'portfolio' post.
+    $skill_id = get_post_meta($post->ID, 'skills', true);
+
+    if (!empty($skill_id)) {
+        // Get the skill post object using the skill ID and the 'skill' post type.
+        $skill_post = get_post($skill_id, 'skill', true);
+
+        // Add skill data to the 'skills' field in the 'payload' object.
+        if ($skill_post) {
+            $skill_title = $skill_post->post_title;
+            $skill_image = wp_get_attachment_url(get_post_meta($skill_id, 'skill_image', true));
+
+            $custom_fields['skills'][] = array(
+                'title' => $skill_title,
+                'skill_image' => $skill_image,
+            );
+        }
+    }
+
+    $response->data['payload'] = $custom_fields;
     return $response;
 }
 add_filter('rest_prepare_portfolio', 'developer_portfolio_modify_portfolio_rest_api_response', 10, 3);
