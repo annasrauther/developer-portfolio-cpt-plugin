@@ -20,9 +20,10 @@ function developer_portfolio_register_skills_cpt() {
             'all_items' => 'All Skills',
         ),
         'menu_icon' => 'dashicons-html',
+        'heirarchical' => true, // To enable the default Posts-like UI for the custom post type
         'public' => true,
         'has_archive' => true,
-        'supports' => array('title'),
+        'supports' => array('title', 'page-attributes'),
         'show_in_rest' => true, // To enable REST API support
     ));
 }
@@ -111,14 +112,12 @@ add_filter('rest_prepare_skill', 'developer_portfolio_modify_skills_rest_api_res
 /**
  * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
  */
-function filter_add_rest_orderby_params($params) {
-    // Remove the default 'menu_order' from the list
-    $params['orderby']['enum'] = array_diff($params['orderby']['enum'], array('menu_order'));
-    // Add SCPO plugin's ordering
-    $params['orderby']['enum'][] = 'scpo_order';
+function developer_skill_filter_add_rest_skill_orderby_params($params) {
+    $params['orderby']['enum'][] = 'menu_order';
+    $params['per_page']['default'] = 100;
     return $params;
 }
-add_filter('rest_skill_collection_params', 'filter_add_rest_orderby_params', 10, 1);
+add_filter('rest_skill_collection_params', 'developer_skill_filter_add_rest_skill_orderby_params', 10, 1);
 
 /**
  * Add a new column for the "featured" tag on the skills list page.
@@ -128,7 +127,7 @@ add_filter('rest_skill_collection_params', 'filter_add_rest_orderby_params', 10,
  */
 function developer_portfolio_add_skills_list_column($columns) {
     $columns['featured'] = 'Featured';
-    $columns['skill_type'] = 'Type'; // Add the 'Type' taxonomy column.
+    $columns['skill_type'] = 'Type';
     return $columns;
 }
 add_filter('manage_skill_posts_columns', 'developer_portfolio_add_skills_list_column');

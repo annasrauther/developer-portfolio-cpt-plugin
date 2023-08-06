@@ -23,7 +23,7 @@ function developer_portfolio_register_portfolio_cpt() {
         'menu_icon' => 'dashicons-format-gallery', 
         'public' => true,
         'has_archive' => true,
-        'supports' => array('title'),
+        'supports' => array('title', 'page-attributes'),
         'show_in_rest' => true,
     ));
 
@@ -135,11 +135,9 @@ add_filter('rest_prepare_portfolio', 'developer_portfolio_modify_portfolio_rest_
 /**
  * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
  */
-function filter_add_rest_orderby_params($params) {
-    // Remove the default 'menu_order' from the list
-    $params['orderby']['enum'] = array_diff($params['orderby']['enum'], array('menu_order'));
-    // Add SCPO plugin's ordering
-    $params['orderby']['enum'][] = 'scpo_order';
+function developer_portfolio_filter_add_rest_skill_orderby_params($params) {
+    $params['orderby']['enum'][] = 'menu_order';
+    $params['per_page']['default'] = 100;
     return $params;
 }
-add_filter('rest_portfolio_collection_params', 'filter_add_rest_orderby_params', 10, 1);
+add_filter('rest_portfolio_collection_params', 'developer_portfolio_filter_add_rest_skill_orderby_params', 10, 1);
