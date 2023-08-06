@@ -22,8 +22,9 @@ function developer_portfolio_register_experience_cpt() {
         ),
         'menu_icon' => 'dashicons-chart-bar',
         'public' => true,
+        'hierarchical' => true,
         'has_archive' => true,
-        'supports' => array('title'),
+        'supports' => array('title', 'page-attributes'),
         'show_in_rest' => true,
     ));
 }
@@ -104,3 +105,14 @@ function developer_portfolio_modify_experience_rest_api_response($response, $pos
     return $response;
 }
 add_filter('rest_prepare_experience', 'developer_portfolio_modify_experience_rest_api_response', 10, 3);
+
+/**
+ * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
+ */
+function developer_experience_filter_add_rest_experience_orderby_params($params) {
+    // Add SCPO plugin's ordering to the list of permitted orderby values.
+    $params['orderby']['enum'][] = 'menu_order';
+    $params['per_page']['default'] = 100;
+    return $params;
+}
+add_filter('rest_experience_collection_params', 'developer_experience_filter_add_rest_experience_orderby_params', 10, 1);
