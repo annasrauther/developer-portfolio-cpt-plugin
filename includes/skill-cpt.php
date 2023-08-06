@@ -109,6 +109,18 @@ function developer_portfolio_modify_skills_rest_api_response($response, $post, $
 add_filter('rest_prepare_skill', 'developer_portfolio_modify_skills_rest_api_response', 10, 3);
 
 /**
+ * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
+ */
+function filter_add_rest_orderby_params($params) {
+    // Remove the default 'menu_order' from the list
+    $params['orderby']['enum'] = array_diff($params['orderby']['enum'], array('menu_order'));
+    // Add SCPO plugin's ordering
+    $params['orderby']['enum'][] = 'scpo_order';
+    return $params;
+}
+add_filter('rest_skill_collection_params', 'filter_add_rest_orderby_params', 10, 1);
+
+/**
  * Add a new column for the "featured" tag on the skills list page.
  *
  * @param array $columns Existing columns.

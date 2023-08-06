@@ -104,3 +104,15 @@ function developer_portfolio_modify_experience_rest_api_response($response, $pos
     return $response;
 }
 add_filter('rest_prepare_experience', 'developer_portfolio_modify_experience_rest_api_response', 10, 3);
+
+/**
+ * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
+ */
+function filter_add_rest_orderby_params($params) {
+    // Remove the default 'menu_order' from the list
+    $params['orderby']['enum'] = array_diff($params['orderby']['enum'], array('menu_order'));
+    // Add SCPO plugin's ordering
+    $params['orderby']['enum'][] = 'scpo_order';
+    return $params;
+}
+add_filter('rest_experience_collection_params', 'filter_add_rest_orderby_params', 10, 1);
