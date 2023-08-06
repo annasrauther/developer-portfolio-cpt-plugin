@@ -110,6 +110,7 @@ add_filter('rest_prepare_experience', 'developer_portfolio_modify_experience_res
  * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
  */
 function developer_experience_filter_add_rest_experience_orderby_params($params) {
+    // Add SCPO plugin's ordering to the list of permitted orderby values.
     $params['orderby']['enum'][] = 'menu_order';
     $params['per_page']['default'] = 100;
     return $params;

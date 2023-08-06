@@ -113,7 +113,9 @@ add_filter('rest_prepare_skill', 'developer_portfolio_modify_skills_rest_api_res
  * Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
  */
 function developer_skill_filter_add_rest_skill_orderby_params($params) {
+    // Add SCPO plugin's ordering to the list of permitted orderby values for the 'skill' post type.
     $params['orderby']['enum'][] = 'menu_order';
+    // Set the default orderby value to 'menu_order' instead of 'date'.
     $params['per_page']['default'] = 100;
     return $params;
 }

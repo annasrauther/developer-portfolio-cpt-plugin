@@ -143,6 +143,19 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
 - Skills are shown in the REST API for external consumption.
 - The Skills list in the dashboard displays a "Featured" column to identify featured skills.
 
+### Custom Ordering
+
+- All three Custom Post Types (Experience, Portfolio, and Skills) support custom ordering using the Simple Custom Post Order (SCPO) plugin.
+- To set a custom order for the posts, go to the respective post type's dashboard, and use the drag-and-drop feature provided by the SCPO plugin.
+- The custom order set in the dashboard will be replicated in the REST API response, allowing you to fetch posts with the same order.
+- To get a list of posts in the custom order using the REST API, make a GET request to the following endpoint:
+  ```
+  /wp-json/wp/v2/{post_type}?orderby=menu_order&order=asc
+  ```
+- Replace `{post_type}` with the slug of the post type (e.g., `experience`, `portfolio`, `skill`). This will retrieve the posts ordered based on the custom order set in the dashboard using the SCPO plugin. The posts will be displayed in ascending order.
+- You can also use `order=desc` to retrieve the posts in descending order.
+- Note: For the custom ordering to work, make sure to have the SCPO plugin installed and activated in your WordPress installation.
+
 ## License
 
 This plugin is licensed under the GNU General Public License - see the [LICENSE](LICENSE) file for details.
