@@ -89,7 +89,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_experience_meta_boxes');
  *
  * This function modifies the REST API response for the 'experience' custom post type
  * to include custom fields inside the 'payload' object. It adds additional data such as
- * company name, company logo URL, company URL, duration, and description.
+ * company name, company location, company logo URL, company URL, duration, and description.
  *
  * @param WP_REST_Response $response The REST API response.
  * @param WP_Post $post The post object.
