@@ -74,7 +74,7 @@ function developer_portfolio_add_portfolio_metabox($meta_boxes) {
                 'type' => 'post',
                 'post_type' => 'skill',
                 'field_type' => 'select_advanced',
-                'multiple' => true,
+                'clone' => true,
             ),
         ),
     );
@@ -108,24 +108,26 @@ function developer_portfolio_modify_portfolio_rest_api_response($response, $post
         $custom_fields['client'] = $term[0]->name;
     }
 
-    // Get the selected skill ID associated with the 'portfolio' post.
-    $skill_id = get_post_meta($post->ID, 'skills', true);
-
-    if (!empty($skill_id)) {
-        // Get the skill post object using the skill ID and the 'skill' post type.
-        $skill_post = get_post($skill_id, 'skill', true);
-
-        // Add skill data to the 'skills' field in the 'payload' object.
-        if ($skill_post) {
-            $skill_title = $skill_post->post_title;
-            $skill_image = wp_get_attachment_url(get_post_meta($skill_id, 'skill_image', true));
-
-            $custom_fields['skills'][] = array(
-                'title' => $skill_title,
-                'skill_image' => $skill_image,
-            );
-        }
-    }
+     // Get the selected skill IDs associated with the 'portfolio' post.
+     $skill_ids = get_post_meta($post->ID, 'skills', true);
+     
+     if (!empty($skill_ids) && is_array($skill_ids)) {
+         foreach ($skill_ids as $skill_id) {
+             // Get the skill post object using the skill ID and the 'skill' post type.
+             $skill_post = get_post($skill_id, 'skill', true);
+ 
+             // Add skill data to the 'skills' field in the 'payload' object.
+             if ($skill_post) {
+                 $skill_title = $skill_post->post_title;
+                 $skill_image = wp_get_attachment_url(get_post_meta($skill_id, 'skill_image', true));
+ 
+                 $custom_fields['skills'][] = array(
+                     'title' => $skill_title,
+                     'skill_image' => $skill_image,
+                 );
+             }
+         }
+     }
 
     $response->data['payload'] = $custom_fields;
     return $response;
