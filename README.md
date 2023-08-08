@@ -42,6 +42,7 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
         },
         "payload": {
             "company_name": "ABC Company",
+            "company_location": "City, State",
             "company_logo": "https://example.com/wp-content/uploads/company_logo.png",
             "company_url": "https://www.abc-company.com",
             "duration": "January 2022 - March 2023",
@@ -110,6 +111,7 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
 
   - **Title:** *(Text)* The title of the experience.
   - **Company Name:** *(Text)* The name of the company where the experience took place.
+  - **Company Location:** *(Text)* The location of the company.
   - **Company Logo:** *(Image)* The logo of the company.
   - **Company URL:** *(URL)* The URL of the company's website.
   - **Duration:** *(Text)* The duration of the experience. *(E.g., "January 2022 - March 2023")*
