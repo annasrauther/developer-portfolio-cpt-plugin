@@ -42,6 +42,7 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
         },
         "payload": {
             "company_name": "ABC Company",
+            "company_location": "City, State",
             "company_logo": "https://example.com/wp-content/uploads/company_logo.png",
             "company_url": "https://www.abc-company.com",
             "duration": "January 2022 - March 2023",
@@ -66,11 +67,11 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
             "rendered": "Project Name"
         },
         "payload": {
-        "client": "XYZ Client",
-        "featured_image": "https://example.com/wp-content/uploads/portfolio_project_featured_image.jpg",
-        "url": "https://www.example-portfolio-project.com",
-        "description": "<p>This project was about...</p>",
-        "skills": ["Programming", "Design"]
+          "client": "XYZ Client",
+          "featured_image": "https://example.com/wp-content/uploads/portfolio_project_featured_image.jpg",
+          "url": "https://www.example-portfolio-project.com",
+          "description": "<p>This project was about...</p>",
+          "skills": ["Programming", "Design"]
         }
     }
   ```
@@ -91,6 +92,8 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
         },
         "payload": {
             "type": "Front End",
+            "skill_image": "https://example.com/wp-content/uploads/html5_skill_image.png",
+            "skill_url": "https://www.w3schools.com/html/",
             "description": "Web markup language for pages.",
             "featured": true
         }
@@ -110,6 +113,7 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
 
   - **Title:** *(Text)* The title of the experience.
   - **Company Name:** *(Text)* The name of the company where the experience took place.
+  - **Company Location:** *(Text)* The location of the company.
   - **Company Logo:** *(Image)* The logo of the company.
   - **Company URL:** *(URL)* The URL of the company's website.
   - **Duration:** *(Text)* The duration of the experience. *(E.g., "January 2022 - March 2023")*
@@ -136,6 +140,8 @@ The **Developer Portfolio CPT** is a user-friendly custom post type plugin desig
 - Each Skill entry can have the following fields:
 
   - **Title:** *(Text)* The name of the skill.
+  - **Skill Image:** *(Image)* The featured image for the skill.
+  - **Skill URL:** *(URL)* The URL of the skill.
   - **Type:** *(Text)* The type or category of the skill. *(E.g., Programming, Design, Marketing)*
   - **Description:** *(Textarea)* A brief description of the skill.
   - **Featured:** *(Checkbox)* A checkbox to indicate if the skill is featured.

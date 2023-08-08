@@ -66,6 +66,11 @@ function developer_portfolio_add_skills_metabox($meta_boxes) {
                 'type' => 'image_advanced',
             ),
             array(
+                'name' => 'Skill URL',
+                'id' => 'skill_url',
+                'type' => 'url',
+            ),
+            array(
                 'name' => 'Description',
                 'id' => 'description',
                 'type' => 'textarea',
@@ -86,7 +91,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_skills_metabox');
  * Modify the REST API response to show custom fields inside the 'payload' object.
  *
  * Modifies the REST API response to include custom fields inside the 'payload' object for the 'Skills' custom post type.
- * This ensures that the custom fields (description, featured, and skill_type) are available when fetching skill data from the REST API.
+ * This ensures that the custom fields (description, skill_url, featured, and skill_type) are available when fetching skill data from the REST API.
  *
  * @param WP_REST_Response $response The REST API response object.
  * @param WP_Post          $post     The 'Skills' post object.
@@ -96,6 +101,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_skills_metabox');
 function developer_portfolio_modify_skills_rest_api_response($response, $post, $request) {
     $custom_fields = array(
         'skill_image' => wp_get_attachment_url(get_post_meta($post->ID, 'skill_image', true)),
+        'skill_url' => get_post_meta($post->ID, 'skill_url', true),
         'description' => get_post_meta($post->ID, 'description', true),
     );
 

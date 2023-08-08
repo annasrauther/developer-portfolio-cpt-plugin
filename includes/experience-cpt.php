@@ -35,7 +35,7 @@ add_action('init', 'developer_portfolio_register_experience_cpt');
  *
  * Adds a custom meta box named 'Experience Details' to the 'experience' custom post type.
  * The meta box allows users to enter additional details for each work experience, including
- * company name, company logo, company URL, duration, and description.
+ * company name, company location, company logo, company URL, duration, and description.
  */
 function developer_portfolio_add_experience_meta_boxes($meta_boxes) {
     $meta_boxes[] = array(
@@ -49,6 +49,11 @@ function developer_portfolio_add_experience_meta_boxes($meta_boxes) {
             array(
                 'name' => 'Company Name',
                 'id' => 'company_name',
+                'type' => 'text',
+            ),
+            array(
+                'name' => 'Company Location',
+                'id' => 'company_location',
                 'type' => 'text',
             ),
             array(
@@ -84,7 +89,7 @@ add_filter('rwmb_meta_boxes', 'developer_portfolio_add_experience_meta_boxes');
  *
  * This function modifies the REST API response for the 'experience' custom post type
  * to include custom fields inside the 'payload' object. It adds additional data such as
- * company name, company logo URL, company URL, duration, and description.
+ * company name, company location, company logo URL, company URL, duration, and description.
  *
  * @param WP_REST_Response $response The REST API response.
  * @param WP_Post $post The post object.
@@ -97,6 +102,7 @@ function developer_portfolio_modify_experience_rest_api_response($response, $pos
 
     $response->data['payload'] = array(
         'company_name' => get_post_meta($post->ID, 'company_name', true),
+        'company_location' => get_post_meta($post->ID, 'company_location', true),
         'company_logo' => $company_logo_url,
         'company_url' => get_post_meta($post->ID, 'company_url', true),
         'duration' => get_post_meta($post->ID, 'duration', true),
